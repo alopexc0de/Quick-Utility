@@ -1,0 +1,10 @@
+Quick Utility (Q) - A script that satisifes various IT needs
+
+Copyright 2015-2017 David Todd (c0de) c0de@c0defox.es
+License: MIT, Refer to LICENSE file for more information
+
+This script was born out of my need to constantly change IP addresses at work. I've slowly added more features as time goes on.
+This script is designed for Windows 7-10, but I have had success in running it as the Administrator under Windows XP.
+This script also runs fully interactive. In the future, I may wish to add non-interactive command-line parameters, but I have not implemented it.
+
+
