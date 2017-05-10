@@ -91,8 +91,8 @@ if '%errorlevel%' NEQ '0' (
     echo Set DHCP - The reverse of Set Static IP, turns on DHCP on "%lanint%"
     echo Disable Firewall - Disables firewall for public, private and domain networks - Unsafe! Turn it back on when done
     echo Enable Firewall - Enables firewall for public, private and domain networks
-    echo Disable Network Adapter - Sets the %wifiint% network adapter to Disabled (disconnecting it from any network)
-    echo Enable Network Adapter - Sets the %wifiint% network adapter to Enabled (reconnecting back to its previous network)
+    echo Disable Network Adapter - Sets the "%wifiint%" network adapter to Disabled (disconnecting it from any network)
+    echo Enable Network Adapter - Sets the "%wifiint%" network adapter to Enabled (reconnecting back to its previous network)
     echo Show COM Ports - Lists the COM (serial) ports connected to this device
     echo Ping Host - Prompts user for IP address of host and opens a new cmd window to ping until canceled by the user with CTRL+C
     echo.
@@ -101,6 +101,9 @@ if '%errorlevel%' NEQ '0' (
     echo Advanced Options - These are settings that change how this script acts without having to edit it
     echo Change name of %lanint% - This changes the network interface that this script will set network settings for 
     echo Change name of %wifiint% - This changes the wireless network interface that this script will enable/disable
+    echo Change flag StatInt for %lanint% - By default, the script assumes that "%lanint%" is in DHCP mode, toggle this to assume static IP
+    echo Change flag FWStatus - By default, the script assumes that the firewall is enabled, toggle this to assume disabled
+    echo Change flag IntOff - By default, the script assumes that "%wifiint%" is enabled, toggle this to assume disabled
     pause
     :: Put the window size back
     call :winresize
@@ -184,6 +187,9 @@ if '%errorlevel%' NEQ '0' (
     echo [B] Back
     echo [1] Change name of %lanint%
     echo [2] Change name of %wifiint%
+    echo [3] Change flag StatInt for %lanint%
+    echo [4] Change flag FWStatus
+    echo [5] Change flag IntOff for %wifiint%
 
     set /P c=Chose one of the above: 
     for %%? in (b) do if /I "%C%"=="%%?" (
@@ -192,6 +198,63 @@ if '%errorlevel%' NEQ '0' (
     )
     for %%? in (1) do if /I "%C%"=="%%?" goto setlanint
     for %%? in (2) do if /I "%C%"=="%%?" goto setwifiint
+    for %%? in (3) do if /I "%C%"=="%%?" (
+        if "%staticip%"=="False" (
+            set /P c=%lanint% is assumed to be DHCP, assume Static config? [Y/n]
+            for %%? in (y) do if /I "%C%"=="%%?" (
+                set "staticip=True"
+                goto advmenu
+            )
+            echo Aborting...
+            goto advmenu
+        ) else (
+            set /P c=%lanint% is assumed to have a Static config, assume DHCP? [Y/n]
+            for %%? in (y) do if /I "%C%"=="%%?" (
+                set "staticip=False"
+                goto advmenu
+            )
+            echo Aborting...
+            goto advmenu
+        )
+    )
+    for %%? in (4) do if /I "%C%"=="%%?" (
+        if "%fwoff%"=="False" (
+            set /P c=Windows Firewall is assumed to be ON, assume OFF? [Y/n]
+            for %%? in (y) do if /I "%C%"=="%%?" (
+                set "fwoff=True"
+                goto advmenu
+            )
+            echo Aborting...
+            goto advmenu
+        ) else (
+            set /P c=Windows Firewall is assumed to be OFF assume ON? [Y/n]
+            for %%? in (y) do if /I "%C%"=="%%?" (
+                set "fwoff=False"
+                goto advmenu
+            )
+            echo Aborting...
+            goto advmenu
+        )
+    )
+    for %%? in (5) do if /I "%C%"=="%%?" (
+        if "%wifioff%"=="False" (
+            set /P c=%wifiint% is assumed to be enabled, assume disabled? [Y/n]
+            for %%? in (y) do if /I "%C%"=="%%?" (
+                set "wifioff=True"
+                goto advmenu
+            )
+            echo Aborting...
+            goto advmenu
+        ) else (
+            set /P c=%wifiint% is assumed to be enabled, assume disabled? [Y/n]
+            for %%? in (y) do if /I "%C%"=="%%?" (
+                set "wifioff=False"
+                goto advmenu
+            )
+            echo Aborting...
+            goto advmenu
+        )
+    )
     :: Default to going back to the menu
     echo Wrong option entered!
     goto advmenu
