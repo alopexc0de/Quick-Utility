@@ -1,7 +1,7 @@
 @echo off
 :: Quick Utility (Q)
 :: This script was born out of my need to constantly change my IP address when working in the TechRoom at OceanTech Recycling
-:: From there, it gained more features that I found myself having to do more and more frequently. 
+:: From there, it gained more features that I found myself having to do more and more frequently.
 :: This script is fully interactive with a basic dynamic menu system and has no command-line arguments
 
 :: Copyright (C) 2015-2017 David Todd (c0de) c0de@c0defox.es
@@ -45,7 +45,7 @@ if '%errorlevel%' NEQ '0' (
 ) else ( goto gotAdmin )
 
 :UACPrompt
-    :: Uses Visual Basic Script to runas user 1 (Administrator) the calling script (this one) 
+    :: Uses Visual Basic Script to runas user 1 (Administrator) the calling script (this one)
     echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
     :: The following two comments are for passing arguments. Q does not use command line arguments at the moment and runs interactive
     :: If in the future we want arguments and non-interactive mode, uncomment the following two and remove the last echo in this function
@@ -76,13 +76,13 @@ if '%errorlevel%' NEQ '0' (
 
 :help
     :: Make the window a little wider to fit the help text
-    mode con:cols=130 lines=30
+    mode con:cols=135 lines=32
     title Quick Utility - Help
     echo This script facilitates setting various networking features without having to go into the control panel
     echo When pressing CTRL+C, you will be prompted if you wish to terminate the batch job. Answering Y will close this script.
     echo Here is what the following options do and how to use them
     echo.
-    echo ===============================================================================================================================
+    echo ===========================================================================================================================================
     echo.
     echo Main Menu Help
     echo Quit - Exits the script, you can do this at anytime by pressing CTRL+C or by clicking the x in the upper right corner
@@ -95,12 +95,14 @@ if '%errorlevel%' NEQ '0' (
     echo Enable Network Adapter - Sets the "%wifiint%" network adapter to Enabled (reconnecting back to its previous network)
     echo Show COM Ports - Lists the COM (serial) ports connected to this device
     echo Ping Host - Prompts user for IP address of host and opens a new cmd window to ping until canceled by the user with CTRL+C
+    echo Restart "%lanint%" - Disables and Re-Enables your "%lanint%". Same as using option 3 twice, except for "%lanint%" instead of "%wifiint%"
+    echo Release and Renew "%lanint%" - If DHCP is turned on, it will release its IP address and request a new one
     echo.
-    echo ===============================================================================================================================
+    echo ===========================================================================================================================================
     echo.
     echo Advanced Options - These are settings that change how this script acts without having to edit it
-    echo Change name of %lanint% - This changes the network interface that this script will set network settings for 
-    echo Change name of %wifiint% - This changes the wireless network interface that this script will enable/disable
+    echo Change name of %lanint% - This changes the network interface that this script will set network settings for
+    echo Change name of %wifiint% - This changes the network interface that this script will enable/disable
     echo Change flag StatInt for %lanint% - By default, the script assumes that "%lanint%" is in DHCP mode, toggle this to assume static IP
     echo Change flag FWStatus - By default, the script assumes that the firewall is enabled, toggle this to assume disabled
     echo Change flag IntOff - By default, the script assumes that "%wifiint%" is enabled, toggle this to assume disabled
@@ -140,10 +142,12 @@ if '%errorlevel%' NEQ '0' (
     :: Single use actions
     echo [7] Show COM Ports
     echo [8] Ping Host
+    echo [9] Restart "%lanint%"
+    echo [0] Release and Renew "%lanint%"
     echo.
 
     :: Process the user input from the menu
-    SET /P C=Choose one of the above: 
+    SET /P C=Choose one of the above:
     :: Toggle actions - You can do one or the other of each of these
 
     :: If the user chose to change their IP address
@@ -173,6 +177,8 @@ if '%errorlevel%' NEQ '0' (
     :: Single use actions
     for %%? in (7) do if /I "%C%"=="%%?" goto G
     for %%? in (8) do if /I "%C%"=="%%?" goto H
+    for %%? in (9) do if /I "%C%"=="%%?" goto I
+    for %%? in (0) do if /I "%C%"=="%%?" goto J
     for %%? in (A) do if /I "%C%"=="%%?" goto advmenu
     for %%? in (Q) do if /I "%C%"=="%%?" goto end
     for %%? in (H) do if /I "%C%"=="%%?" goto help
@@ -390,7 +396,7 @@ if '%errorlevel%' NEQ '0' (
     cls
     goto choice
 
-:: Disable Network Adapter 
+:: Disable Network Adapter
 :E
     :: Disables network interface (Wireless Area Connection by default)
     title Quick Utility - Disable Network Adapter: %wifiint%
@@ -446,6 +452,36 @@ if '%errorlevel%' NEQ '0' (
 
     :: Open a new window with the ping results
     start cmd /c "ping -t %ip%"
+    pause
+    cls
+    goto choice
+
+:: Restart %lanint%
+:I
+    :: Disables/Enables the interface defined as %lanint%
+    title Quick Utility - Restart Network Adapter: %lanint%
+    echo Disabling %lanint%
+
+    netsh interface set interface "%lanint%" Disable
+    echo Enabling %lanint%
+    netsh interface set interface "%lanint%" Enable
+
+    pause
+    cls
+    goto choice
+
+:: Release and Renew %lanint%
+:J
+    title Quick Utility - Release and Renew DHCP: %lanint%
+    echo Releasing the IP address on %lanint%
+    ipconfig /release %lanint% > NUL
+
+    echo Requesting new IP address on %lanint%
+    ipconfig /renew %lanint% > NUL
+
+    echo Here are the new settings for %computername%:
+    netsh int ip show config name="%lanint%"
+
     pause
     cls
     goto choice
