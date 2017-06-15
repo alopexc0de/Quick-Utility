@@ -191,7 +191,7 @@ if '%errorlevel%' NEQ '0' (
     echo [4] Change flag FWStatus
     echo [5] Change flag IntOff for %wifiint%
 
-    set /P c=Chose one of the above: 
+    set /P c=Chose one of the above:
     for %%? in (b) do if /I "%C%"=="%%?" (
         cls
         goto choice
@@ -200,16 +200,16 @@ if '%errorlevel%' NEQ '0' (
     for %%? in (2) do if /I "%C%"=="%%?" goto setwifiint
     for %%? in (3) do if /I "%C%"=="%%?" (
         if "%staticip%"=="False" (
-            set /P c=%lanint% is assumed to be DHCP, assume Static config? [Y/n]
-            for %%? in (y) do if /I "%C%"=="%%?" (
+            set /P c=%lanint% is assumed to be DHCP, assume Static config? [y/N]
+            for %%? in (Y) do if /I "%C%"=="%%?" (
                 set "staticip=True"
                 goto advmenu
             )
             echo Aborting...
             goto advmenu
         ) else (
-            set /P c=%lanint% is assumed to have a Static config, assume DHCP? [Y/n]
-            for %%? in (y) do if /I "%C%"=="%%?" (
+            set /P c=%lanint% is assumed to have a Static config, assume DHCP? [y/N]
+            for %%? in (Y) do if /I "%C%"=="%%?" (
                 set "staticip=False"
                 goto advmenu
             )
@@ -219,16 +219,16 @@ if '%errorlevel%' NEQ '0' (
     )
     for %%? in (4) do if /I "%C%"=="%%?" (
         if "%fwoff%"=="False" (
-            set /P c=Windows Firewall is assumed to be ON, assume OFF? [Y/n]
-            for %%? in (y) do if /I "%C%"=="%%?" (
+            set /P c=Windows Firewall is assumed to be ON, assume OFF? [y/N]
+            for %%? in (Y) do if /I "%C%"=="%%?" (
                 set "fwoff=True"
                 goto advmenu
             )
             echo Aborting...
             goto advmenu
         ) else (
-            set /P c=Windows Firewall is assumed to be OFF assume ON? [Y/n]
-            for %%? in (y) do if /I "%C%"=="%%?" (
+            set /P c=Windows Firewall is assumed to be OFF assume ON? [y/N]
+            for %%? in (Y) do if /I "%C%"=="%%?" (
                 set "fwoff=False"
                 goto advmenu
             )
@@ -238,16 +238,16 @@ if '%errorlevel%' NEQ '0' (
     )
     for %%? in (5) do if /I "%C%"=="%%?" (
         if "%wifioff%"=="False" (
-            set /P c=%wifiint% is assumed to be enabled, assume disabled? [Y/n]
-            for %%? in (y) do if /I "%C%"=="%%?" (
+            set /P c=%wifiint% is assumed to be enabled, assume disabled? [y/N]
+            for %%? in (Y) do if /I "%C%"=="%%?" (
                 set "wifioff=True"
                 goto advmenu
             )
             echo Aborting...
             goto advmenu
         ) else (
-            set /P c=%wifiint% is assumed to be enabled, assume disabled? [Y/n]
-            for %%? in (y) do if /I "%C%"=="%%?" (
+            set /P c=%wifiint% is assumed to be enabled, assume disabled? [y/N]
+            for %%? in (Y) do if /I "%C%"=="%%?" (
                 set "wifioff=False"
                 goto advmenu
             )
@@ -267,7 +267,7 @@ if '%errorlevel%' NEQ '0' (
     set /P "change=Change to a different network interface? [y/N] "
 
     :: If the user answered yes
-    for %%? in (y) do if /I "%change%"=="%%?" (
+    for %%? in (Y) do if /I "%change%"=="%%?" (
         set /P "newlan=Enter the name of your LAN interface: "
         if %newlan% == "" (goto setlanint)
 
@@ -294,7 +294,7 @@ if '%errorlevel%' NEQ '0' (
     set /P "change=Change to a different network interface? [y/N] "
 
     :: If the user answered yes
-    for %%? in (y) do if /I "%change%"=="%%?" (
+    for %%? in (Y) do if /I "%change%"=="%%?" (
         set /P "newlan=Enter the name of your wireless interface: "
         if %newlan% == "" (goto setwifiint)
 
